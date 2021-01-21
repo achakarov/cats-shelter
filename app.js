@@ -44,7 +44,7 @@ app.post('/add-cat', (req, res) => {
         }
 
         let oldPath = files.upload.path;
-        let newPath = path.normalize(path.join(globalPath, '/content/images/' + files.upload.name));
+        let newPath = path.normalize(path.join(globalPath, '/public/images/' + files.upload.name));
         mv(oldPath, newPath, (err) => {
             if (err) {
                 throw new Error(err);
