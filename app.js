@@ -21,7 +21,7 @@ app.get('/add-breed', (req, res) => {
 });
 
 app.post('/add-breed', (req, res) => {
-    console.log(req.body)
+    // console.log(req.body)
     let catBreed = req.body.breed;
     cats.addBreed(catBreed);
     res.redirect('/');
@@ -31,6 +31,10 @@ app.get('/add-cat', (req, res) => {
     res.render('addCat', { breeds: cats.getAllBreeds() });
 });
 
-
+app.post('/add-cat', (req, res) => {
+    let { name, description, upload, breed } = req.body;
+    cats.addCat(name, description, upload, breed);
+    res.redirect('/');
+});
 
 app.listen(port, () => console.log(`Server is listening on port ${port}`)); 
