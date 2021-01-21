@@ -54,7 +54,7 @@ app.post('/add-cat', (req, res) => {
             if (err) {
                 throw new Error(err);
             }
-            cats.addCat({ id: (cats.length + 1).toString(), ...fields, image: files.upload.name });
+            cats.addCat({ id: (cats.getAllCats().length + 1).toString(), ...fields, image: files.upload.name });
         });
     });
     res.redirect('/');
