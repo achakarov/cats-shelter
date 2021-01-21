@@ -4,8 +4,8 @@ const cats = catsData.slice();
 const breedsData = require('./data/breeds.json');
 const breeds = breedsData.slice();
 
-function addCat(name, description, image, breed) {
-    cats.push({ name, description, image, breed });
+function addCat(data) {
+    cats.push(data);
     fs.writeFile('./data/cats.json', JSON.stringify(cats), (err) => {
         if (err) {
             console.log(err);

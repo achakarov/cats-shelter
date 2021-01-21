@@ -3,6 +3,10 @@ const handlebars = require('express-handlebars');
 const path = require('path');
 const cats = require('./cats');
 const bodyParser = require('body-parser');
+const formidable = require('formidable');
+const mv = require('mv');
+const globalPath = __dirname.toString().replace('handlers', '');
+const fs = require('fs');
 
 const app = express();
 const port = 5000;
@@ -28,12 +32,31 @@ app.post('/add-breed', (req, res) => {
 });
 
 app.get('/add-cat', (req, res) => {
-    res.render('addCat', { breeds: cats.getAllBreeds() });
+    res.render('addCat', { breeds: cats.getAllBreeds(), cats: cats.getAllCats() });
 });
 
 app.post('/add-cat', (req, res) => {
-    let { name, description, upload, breed } = req.body;
-    cats.addCat(name, description, upload, breed);
+    let form = new formidable.IncomingForm();
+    form.parse(req, (err, fields, files) => {
+        if (err) {
+            throw new Error(err);
+        }
+
+        let oldPath = files.upload.path;
+        let newPath = path.normalize(path.join(globalPath, '/content/images/' + files.upload.name));
+        mv(oldPath, newPath, (err) => {
+            if (err) {
+                throw new Error(err);
+            }
+            console.log(`Image uploaded to ${newPath}`);
+        });
+        fs.readFile('./data/cats.json', (err, data) => {
+            if (err) {
+                throw new Error(err);
+            }
+            cats.addCat({ id: (cats.length + 1).toString(), ...fields, image: files.upload.name });
+        });
+    });
     res.redirect('/');
 });
 
