@@ -12,6 +12,7 @@ const app = express();
 const port = 5000;
 
 app.use('/static', express.static('public'));
+app.use(express.static(__dirname + '/public'));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.engine('hbs', handlebars({ extname: 'hbs' }));
 app.set('view engine', 'hbs');
