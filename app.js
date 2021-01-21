@@ -25,6 +25,12 @@ app.post('/add-breed', (req, res) => {
     let catBreed = req.body.breed;
     cats.addBreed(catBreed);
     res.redirect('/');
-})
+});
+
+app.get('/add-cat', (req, res) => {
+    res.render('addCat', { breeds: cats.getAllBreeds() });
+});
+
+
 
 app.listen(port, () => console.log(`Server is listening on port ${port}`)); 
