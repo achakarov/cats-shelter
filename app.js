@@ -1,6 +1,7 @@
 const express = require('express');
 const handlebars = require('express-handlebars');
 const path = require('path');
+const cats = require('./cats'); 
 
 const app = express();
 const port = 5000;
