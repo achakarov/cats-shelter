@@ -5,11 +5,13 @@ const path = require('path');
 const app = express();
 const port = 5000;
 
+app.use('/static', express.static('public'));
+
 app.engine('hbs', handlebars({ extname: 'hbs' }));
 app.set('view engine', 'hbs');
 
 app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname + '/views/index.html'));
+    res.render('home');
 })
 
 app.listen(port, () => console.log(`Server is listening on port ${port}`)); 
