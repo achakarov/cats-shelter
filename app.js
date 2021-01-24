@@ -7,6 +7,8 @@ const formidable = require('formidable');
 const mv = require('mv');
 const globalPath = __dirname.toString().replace('handlers', '');
 const fs = require('fs');
+const catsDb = require('./data/cats.json');
+const breedDb = require('./data/breeds.json');
 
 const app = express();
 const port = 5000;
@@ -61,6 +63,12 @@ app.post('/add-cat', (req, res) => {
     res.redirect('/');
 });
 
-
+app.get('/edit/:id?', (req, res) => {
+    const id = req.params.id;
+    const cat = catsDb.find(x => x.id === id);
+    cat.selected = true;
+    res.render('editCat', { cat, breeds: cats.getAllBreeds() });
+    console.log()
+});
 
 app.listen(port, () => console.log(`Server is listening on port ${port}`)); 
