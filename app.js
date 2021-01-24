@@ -70,8 +70,8 @@ app.get('/edit/:id?', (req, res) => {
 });
 
 app.post('/edit/:id?', (req, res) => {
+
     let form = new formidable.IncomingForm();
-    console.log(req.params)
     form.parse(req, (err, fields, files) => {
         if (err) {
             throw new Error(err);
@@ -91,22 +91,15 @@ app.post('/edit/:id?', (req, res) => {
                 return;
             }
             let allCats = JSON.parse(data);
-            // console.log(allCats)
             const id = req.params.id;
-            console.log(id)
             for (const cat of allCats) {
-                console.log(cat.id)
-                console.log(id)
                 if (cat.id === id) {
                     cat.name = fields.name;
                     cat.description = fields.description;
                     cat.breed = fields.breed;
-                    // console.log(files.upload.name)
-                    // console.log(cat.image)
                     cat.image = files.upload.name;
                 }
             }
-            // console.log(allCats)
             const json = JSON.stringify(allCats);
             fs.writeFile('./data/cats.json', json, (err) => {
                 if (err) {
