@@ -8,8 +8,10 @@ const mv = require('mv');
 const globalPath = __dirname.toString().replace('handlers', '');
 const fs = require('fs');
 const catsDb = require('./data/cats.json');
-const breedDb = require('./data/breeds.json');
+const liveReload = require('livereload');
+const connectLivereload = require("connect-livereload");
 
+const liveReloadServer = liveReload.createServer();
 const app = express();
 const port = 5000;
 
@@ -18,6 +20,8 @@ app.use(express.static(__dirname + '/public'));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.engine('hbs', handlebars({ extname: 'hbs' }));
 app.set('view engine', 'hbs');
+app.use(connectLivereload());
+liveReloadServer.watch(path.join(__dirname, 'public'));
 
 app.get('/', (req, res) => {
     res.render('home', { cats: cats.getAllCats(), isOnHomePage: true });
@@ -141,3 +145,9 @@ app.post('/new-home/:id?', (req, res) => {
 });
 
 app.listen(port, () => console.log(`Server is listening on port ${port}`)); 
+
+liveReloadServer.server.once("connection", () => {
+    setTimeout(() => {
+      liveReloadServer.refresh("/");
+    }, 50);
+  });
