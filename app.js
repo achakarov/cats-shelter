@@ -90,7 +90,7 @@ app.post('/edit/:id?', (req, res) => {
                 throw err;
             }
 
-            const id = pathname.split('/').pop();
+            const id = req.params.id;
             let allCats = JSON.parse(data);
             for (const cat of allCats) {
                 if (cat.id === id) {
@@ -116,5 +116,14 @@ app.post('/edit/:id?', (req, res) => {
         res.end();
     });
 });
+
+app.get('/new-home/:id?', (req, res) => {
+    const id = req.params.id;
+    const cat = catsDb.find(x => x.id === id);
+    const newPath = `/images/${cat.image}`;
+    res.render('catShelter', { cat, newPath });
+});
+
+
 
 app.listen(port, () => console.log(`Server is listening on port ${port}`)); 
