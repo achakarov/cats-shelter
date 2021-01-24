@@ -66,9 +66,55 @@ app.post('/add-cat', (req, res) => {
 app.get('/edit/:id?', (req, res) => {
     const id = req.params.id;
     const cat = catsDb.find(x => x.id === id);
-    cat.selected = true;
     res.render('editCat', { cat, breeds: cats.getAllBreeds() });
-    console.log()
+});
+
+app.post('/edit/:id?', (req, res) => {
+    let form = new formidable.IncomingForm();
+    form.parse(req, (err, fields, files) => {
+        if (err) {
+            console.log(err);
+        }
+        const oldPath = files.upload.path;
+        const newPath = path.normalize(path.join(globalPath, '/public/images/' + files.upload.name));
+        mv(oldPath, newPath, err => {
+            if (err) {
+                throw err;
+            }
+            console.log(`Image successfully uploaded to: ${newPath}`);
+        });
+
+        fs.readFile('./data/cats.json', 'utf-8', (err, data) => {
+            if (err) {
+                console.log(err);
+                throw err;
+            }
+
+            const id = pathname.split('/').pop();
+            let allCats = JSON.parse(data);
+            for (const cat of allCats) {
+                if (cat.id === id) {
+                    cat.name = fields.name;
+                    cat.description = fields.description;
+                    cat.breed = fields.breed;
+                    cat.image = files.upload.name;
+                }
+            }
+
+            const json = JSON.stringify(allCats);
+            fs.writeFile('./data/cats.json', json, (err) => {
+                if (err) {
+                    throw err;
+                }
+                console.log(`Cat ID: ${id} successfully edited!`);
+            });
+        });
+
+        res.writeHead(302, {
+            'location': '/'
+        });
+        res.end();
+    });
 });
 
 app.listen(port, () => console.log(`Server is listening on port ${port}`)); 
